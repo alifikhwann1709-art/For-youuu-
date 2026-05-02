@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: white;
+}
+
+/* center */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* button */
+button {
+  padding: 15px 30px;
+  font-size: 20px;
+  background: #ff4d6d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+}
+
+/* typing */
+#typing {
+  font-size: 24px;
+  border-right: 2px solid white;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* container */
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  animation: pulse 2.5s infinite ease-in-out;
+}
+
+/* heart text */
+.love {
+  position: absolute;
+  top: -20px;
+  color: #ff4d6d;
+  font-weight: bold;
+
+  text-shadow:
+    0 0 5px #ff4d6d,
+    0 0 10px #ff4d6d,
+    0 0 20px #ff1a4d,
+    0 0 30px #ff1a4d;
+
+  animation: rain linear forwards;
+}
+
+/* falling animation */
+@keyframes rain {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(50vh) translateX(20px);
+  }
+  100% {
+    transform: translateY(110vh) translateX(-20px);
+    opacity: 0;
+  }
+}
+
+/* fade */
+.fade {
+  animation: fade 1.5s forwards;
+}
+
+@keyframes fade {
+  to { opacity: 0; }
+}
+
+/* message */
+.message {
+  position: absolute;
+  bottom: 8%;
+  width: 100%;
+  font-size: 18px;
+  opacity: 0;
+  animation: show 3s ease forwards;
+  animation-delay: 3s;
+}
+
+@keyframes show {
+  to { opacity: 1; }
+}
+
+/* photos */
+.photo {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+  animation: floatPhoto 6s ease-in-out infinite;
+}
+
+@keyframes floatPhoto {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<div class="center" id="startScreen">
+  <button onclick="start()">Tap for a surprise 🎁</button>
+</div>
+
+<!-- TYPING -->
+<div class="center" id="typingScreen" style="display:none;">
+  <div id="typing"></div>
+</div>
+
+<!-- HEART -->
+<div class="container" id="container"></div>
+
+<!-- MESSAGE -->
+<div class="message">
+  Happy Birthday, Gail ❤️<br>
+  I don’t believe it’s been 2 years since the night we met…<br>
+  and we’re still here, still choosing each other.<br>
+  Thank you for staying with me through everything.<br>
+  I love you more than words can say 💖
+</div>
+
+<!-- MUSIC -->
+<audio id="music" src="die for you.mp3"></audio>
+
+<script>
+const text = "I have something to show you...";
+let i = 0;
+
+/* START */
+function start() {
+  document.getElementById("startScreen").classList.add("fade");
+
+  setTimeout(() => {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("typingScreen").style.display = "block";
+    typeEffect();
+  }, 1500);
+}
+
+/* TYPING */
+function typeEffect() {
+  const el = document.getElementById("typing");
+
+  if (i < text.length) {
+    el.innerHTML += text[i];
+    i++;
+    setTimeout(typeEffect, 50);
+  } else {
+    setTimeout(showHeart, 1200);
+  }
+}
+
+/* SHOW HEART */
+function showHeart() {
+  document.getElementById("typingScreen").classList.add("fade");
+
+  setTimeout(() => {
+    document.getElementById("typingScreen").style.display = "none";
+    document.getElementById("container").style.display = "block";
+
+    document.getElementById("music").play();
+
+    createHeart();
+    addPhotos();
+
+  }, 1500);
+}
+
+/* CREATE HEART */
+function createHeart() {
+  const container = document.getElementById("container");
+
+  setInterval(() => {
+    let el = document.createElement("div");
+    el.className = "love";
+    el.innerText = "I love you";
+
+    // random horizontal position
+    el.style.left = Math.random() * window.innerWidth + "px";
+
+    // random size
+    el.style.fontSize = (10 + Math.random() * 14) + "px";
+
+    // random opacity
+    el.style.opacity = Math.random();
+
+    // animation duration
+    let duration = 3 + Math.random() * 3;
+    el.style.animationDuration = duration + "s";
+
+    container.appendChild(el);
+
+    // remove after animation
+    setTimeout(() => {
+      el.remove();
+    }, duration * 1000);
+
+  }, 100);
+}
+
+/* PHOTOS */
+function addPhotos() {
+  const container = document.getElementById("container");
+
+  const images = ["img1.jpg.jpeg", "img2.jpg.jpeg", "img3.jpg.jpeg"];
+
+  images.forEach((src, i) => {
+    let img = document.createElement("img");
+    img.src = src;
+    img.className = "photo";
+
+    if (i === 1) {
+      img.style.left = "48%";
+      img.style.top = "50%";
+      img.style.transform = "translate(-50%, -50%) scale(1.3)";
+      img.style.zIndex = "10";
+    } else {
+      img.style.left = (i === 0 ? "20%" : "75%");
+      img.style.top = (i === 0 ? "40%" : "28%");
+      img.style.transform = "translate(-50%, -50%)";
+    }
+
+    container.appendChild(img);
+  });
+}
+</script>
+
+</body>
+</html>
